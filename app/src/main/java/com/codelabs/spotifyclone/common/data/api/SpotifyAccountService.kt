@@ -21,7 +21,7 @@ interface SpotifyAccountService {
 
     @FormUrlEncoded
     @POST("token")
-    fun getRefreshedTokenSync(
+    fun getRefreshToken(
         @Field("grant_type") grantType: String,
         @Field("refresh_token") refreshToken: String,
         @Field("client_id") clientId: String,

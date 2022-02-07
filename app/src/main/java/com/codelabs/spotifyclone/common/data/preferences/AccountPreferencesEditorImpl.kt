@@ -1,8 +1,7 @@
 package com.codelabs.spotifyclone.common.data.preferences
 
 import android.content.SharedPreferences
-import com.codelabs.spotifyclone.common.data.model.Token
-import java.time.Duration
+import com.codelabs.spotifyclone.common.domain.model.Token
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -13,10 +12,11 @@ class AccountPreferencesEditorImpl(
     override fun save(token: Token) {
         sharedPreferences.edit().apply {
             putString("access_token", token.accessToken).apply()
-            putString("refresh_token", token.refreshToken).apply()
             putLong("expires_in", calculateExpirationTime(token.expiresIn ?: 0)).apply()
             putString("scope", token.scope).apply()
             putString("token_type", token.tokenType).apply()
+
+            token.refreshToken?.let { putString("refresh_token", it).apply() }
         }
     }
 

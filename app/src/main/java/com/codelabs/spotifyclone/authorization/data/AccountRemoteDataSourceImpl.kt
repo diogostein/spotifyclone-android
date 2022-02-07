@@ -4,7 +4,7 @@ import com.codelabs.spotifyclone.authorization.domain.AccountRemoteDataSource
 import com.codelabs.spotifyclone.common.Constants
 import com.codelabs.spotifyclone.common.data.api.SpotifyAccountService
 import com.codelabs.spotifyclone.common.data.api.response.TokenResponse
-import com.codelabs.spotifyclone.common.data.model.Authorization
+import com.codelabs.spotifyclone.common.domain.model.Authorization
 
 class AccountRemoteDataSourceImpl(
     private val spotifyAccountService: SpotifyAccountService

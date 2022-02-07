@@ -1,24 +1,24 @@
 package com.codelabs.spotifyclone.authorization.data
 
 import com.codelabs.spotifyclone.authorization.domain.AccountLocalDataSource
-import com.codelabs.spotifyclone.common.Resource
-import com.codelabs.spotifyclone.common.data.model.Token
+import com.codelabs.spotifyclone.common.presenter.UiState
+import com.codelabs.spotifyclone.common.domain.model.Token
 import com.codelabs.spotifyclone.common.data.preferences.AccountPreferences
 
 class AccountLocalDataSourceImpl(
     private val editorPreferences: AccountPreferences.Editor,
 ) : AccountLocalDataSource {
 
-    override fun saveCredentials(token: Token): Resource<Nothing> {
+    override fun saveCredentials(token: Token): UiState<Nothing> {
         editorPreferences.save(token)
 
-        return Resource.Success()
+        return UiState.Success()
     }
 
-    override fun clearCredentials(): Resource<Nothing> {
+    override fun clearCredentials(): UiState<Nothing> {
         editorPreferences.clear()
 
-        return Resource.Success()
+        return UiState.Success()
     }
 
 }

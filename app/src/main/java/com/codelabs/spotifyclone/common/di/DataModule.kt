@@ -6,17 +6,26 @@ import com.codelabs.spotifyclone.authorization.data.AccountRepositoryImpl
 import com.codelabs.spotifyclone.authorization.domain.AccountLocalDataSource
 import com.codelabs.spotifyclone.authorization.domain.AccountRemoteDataSource
 import com.codelabs.spotifyclone.authorization.domain.AccountRepository
+import com.codelabs.spotifyclone.common.data.DataExceptionHandlerImpl
 import com.codelabs.spotifyclone.common.data.api.SpotifyAccountService
 import com.codelabs.spotifyclone.common.data.preferences.AccountPreferences
+import com.codelabs.spotifyclone.common.domain.ExceptionHandler
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
+import javax.inject.Singleton
 
 @Module
 @InstallIn(ViewModelComponent::class)
 object DataModule {
+
+    @Provides
+    @ViewModelScoped
+    fun provideDataExceptionHandler(): ExceptionHandler {
+        return DataExceptionHandlerImpl()
+    }
 
     @Provides
     @ViewModelScoped
@@ -39,8 +48,9 @@ object DataModule {
     fun provideAccountRepository(
         remoteDataSource: AccountRemoteDataSource,
         localDataSource: AccountLocalDataSource,
+        exceptionHandler: ExceptionHandler
     ): AccountRepository {
-        return AccountRepositoryImpl(remoteDataSource, localDataSource)
+        return AccountRepositoryImpl(remoteDataSource, localDataSource, exceptionHandler)
     }
 
 }

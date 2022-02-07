@@ -1,6 +1,6 @@
 package com.codelabs.spotifyclone.common.data.preferences
 
-import com.codelabs.spotifyclone.common.data.model.Token
+import com.codelabs.spotifyclone.common.domain.model.Token
 
 sealed interface AccountPreferences {
     interface Reader {

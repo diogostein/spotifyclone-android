@@ -1,4 +1,4 @@
-package com.codelabs.spotifyclone.common.data.model
+package com.codelabs.spotifyclone.common.domain.model
 
 data class Token(
     val accessToken: String?,

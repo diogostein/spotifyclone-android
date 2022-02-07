@@ -34,8 +34,10 @@ object RetrofitModule {
     @Singleton
     @Provides
     fun provideTokenServiceAuthenticator(
-        spotifyAccountService: SpotifyAccountService
-    ) = TokenRefreshAuthenticator(spotifyAccountService)
+        spotifyAccountService: SpotifyAccountService,
+        accountPreferencesReader: AccountPreferences.Reader,
+        accountPreferencesEditor: AccountPreferences.Editor
+    ) = TokenRefreshAuthenticator(spotifyAccountService, accountPreferencesReader, accountPreferencesEditor)
 
     @Singleton
     @Provides

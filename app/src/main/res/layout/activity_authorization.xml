@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".authorization.AuthorizationActivity">
+    tools:context=".authorization.presentation.AuthorizationActivity">
 
     <Button
         android:id="@+id/btnRequestAccess"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Solicitar Acesso"
+        android:text="@string/request_access"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
