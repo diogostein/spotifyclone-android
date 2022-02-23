@@ -1,11 +1,12 @@
-package com.codelabs.spotifyclone.authorization.presentation
+package com.codelabs.spotifyclone.playlist.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.codelabs.spotifyclone.authorization.domain.usecase.GetAccessToken
 import com.codelabs.spotifyclone.common.Result
-import com.codelabs.spotifyclone.common.presentation.UiState
+import com.codelabs.spotifyclone.common.domain.model.Playlist
 import com.codelabs.spotifyclone.common.domain.toMessage
+import com.codelabs.spotifyclone.common.presentation.UiState
+import com.codelabs.spotifyclone.playlist.domain.usecase.GetMyPlaylists
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,19 +15,19 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthorizationViewModel @Inject constructor(
-    private val getAccessToken: GetAccessToken
+class PlaylistListViewModel @Inject constructor(
+    private val getMyPlaylists: GetMyPlaylists
 ) : ViewModel() {
 
-    private val _stateFlow = MutableStateFlow<UiState<Nothing>>(UiState.Initial)
-    val stateFlow: StateFlow<UiState<Nothing>> = _stateFlow
+    private val _stateFlow = MutableStateFlow<UiState<List<Playlist>>>(UiState.Initial)
+    val stateFlow: StateFlow<UiState<List<Playlist>>> = _stateFlow
 
-    fun getAccessToken(responseCode: String) {
+    fun getMyPlaylists() {
         _stateFlow.value = UiState.Loading
 
-        getAccessToken.execute(responseCode).onEach { result ->
+        getMyPlaylists.execute().onEach { result ->
             _stateFlow.value = when (result) {
-                is Result.Success -> UiState.Success()
+                is Result.Success -> UiState.Success(result.data)
                 is Result.Error -> UiState.Error()
                 is Result.Exception -> UiState.Error(result.cause.toMessage())
             }

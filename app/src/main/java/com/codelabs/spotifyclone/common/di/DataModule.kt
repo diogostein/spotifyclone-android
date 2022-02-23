@@ -8,8 +8,13 @@ import com.codelabs.spotifyclone.authorization.domain.AccountRemoteDataSource
 import com.codelabs.spotifyclone.authorization.domain.AccountRepository
 import com.codelabs.spotifyclone.common.data.DataExceptionHandlerImpl
 import com.codelabs.spotifyclone.common.data.api.SpotifyAccountService
+import com.codelabs.spotifyclone.common.data.api.SpotifyService
 import com.codelabs.spotifyclone.common.data.preferences.AccountPreferences
 import com.codelabs.spotifyclone.common.domain.ExceptionHandler
+import com.codelabs.spotifyclone.playlist.data.PlaylistRemoteDataSourceImpl
+import com.codelabs.spotifyclone.playlist.data.PlaylistRepositoryImpl
+import com.codelabs.spotifyclone.playlist.domain.PlaylistRemoteDataSource
+import com.codelabs.spotifyclone.playlist.domain.PlaylistRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,6 +56,23 @@ object DataModule {
         exceptionHandler: ExceptionHandler
     ): AccountRepository {
         return AccountRepositoryImpl(remoteDataSource, localDataSource, exceptionHandler)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun providePlaylistRemoteDataSource(
+        spotifyService: SpotifyService
+    ): PlaylistRemoteDataSource {
+        return PlaylistRemoteDataSourceImpl(spotifyService)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun providePlaylistRepository(
+        remoteDataSource: PlaylistRemoteDataSource,
+        exceptionHandler: ExceptionHandler
+    ): PlaylistRepository {
+        return PlaylistRepositoryImpl(remoteDataSource, exceptionHandler)
     }
 
 }

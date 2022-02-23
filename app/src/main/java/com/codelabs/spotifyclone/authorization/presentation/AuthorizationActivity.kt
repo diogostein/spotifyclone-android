@@ -7,7 +7,7 @@ import androidx.activity.viewModels
 import androidx.lifecycle.asLiveData
 import com.codelabs.spotifyclone.MainActivity
 import com.codelabs.spotifyclone.R
-import com.codelabs.spotifyclone.common.presenter.UiState
+import com.codelabs.spotifyclone.common.presentation.UiState
 import com.codelabs.spotifyclone.common.data.preferences.AccountPreferences
 import com.codelabs.spotifyclone.databinding.ActivityAuthorizationBinding
 import com.google.android.material.snackbar.Snackbar
@@ -26,6 +26,7 @@ class AuthorizationActivity : AppCompatActivity() {
     lateinit var accountPreferences: AccountPreferences.Reader
 
     private lateinit var binding: ActivityAuthorizationBinding
+
     private val viewModel: AuthorizationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,20 +35,35 @@ class AuthorizationActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnRequestAccess.setOnClickListener {
-            AuthorizationClient.openLoginActivity(this, requestCode, authorizationRequest)
+            AuthorizationClient.openLoginActivity(this, REQUEST_CODE, authorizationRequest)
         }
 
         viewModel.stateFlow.asLiveData().observe(this) { state ->
             when (state) {
                 is UiState.Loading -> setLoadingIndicator()
-                is UiState.Success -> moveToHome()
+                is UiState.Success -> navigateToHome()
                 is UiState.Error -> showError(state.message)
                 else -> {}
             }
         }
 
         if (accountPreferences.refreshToken != null) {
-            moveToHome()
+            navigateToHome()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE) {
+            val response = AuthorizationClient.getResponse(resultCode, data)
+
+            when (response.type) {
+                AuthorizationResponse.Type.CODE -> viewModel.getAccessToken(response.code)
+                AuthorizationResponse.Type.ERROR -> showError(response.error)
+                AuthorizationResponse.Type.EMPTY -> showError(response.error)
+                else -> showError()
+            }
         }
     }
 
@@ -71,29 +87,14 @@ class AuthorizationActivity : AppCompatActivity() {
         ).show()
     }
 
-    private fun moveToHome() {
+    private fun navigateToHome() {
         Intent(this, MainActivity::class.java).also {
             finish()
             startActivity(it)
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == Companion.requestCode) {
-            val response = AuthorizationClient.getResponse(resultCode, data)
-
-            when (response.type) {
-                AuthorizationResponse.Type.CODE -> viewModel.getAccessToken(response.code)
-                AuthorizationResponse.Type.ERROR -> showError(response.error)
-                AuthorizationResponse.Type.EMPTY -> showError(response.error)
-                else -> showError()
-            }
-        }
-    }
-
     companion object {
-        const val requestCode = 1
+        const val REQUEST_CODE = 1
     }
 }

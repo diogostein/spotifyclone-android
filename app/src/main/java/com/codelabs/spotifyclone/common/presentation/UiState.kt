@@ -1,4 +1,4 @@
-package com.codelabs.spotifyclone.common.presenter
+package com.codelabs.spotifyclone.common.presentation
 
 sealed class UiState<out T> {
     object Initial : UiState<Nothing>()

@@ -13,7 +13,7 @@ class GetAccessToken(
     private val accountRepository: AccountRepository,
 ) : UseCase<String, Result<Nothing, Token>> {
 
-    override fun execute(input: String): Flow<Result<Nothing, Token>> = flow {
+    override fun execute(input: String?): Flow<Result<Nothing, Token>> = flow {
         emit(
             accountRepository.getAccessToken(
                 Authorization(
