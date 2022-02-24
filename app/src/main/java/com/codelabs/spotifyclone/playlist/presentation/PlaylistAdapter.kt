@@ -3,10 +3,13 @@ package com.codelabs.spotifyclone.playlist.presentation
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.codelabs.spotifyclone.R
 import com.codelabs.spotifyclone.common.domain.model.Playlist
+import com.codelabs.spotifyclone.databinding.ItemPlaylistBinding
 
 class PlaylistAdapter : RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder>() {
 
@@ -34,10 +37,17 @@ class PlaylistAdapter : RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder>
     }
 
     class PlaylistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val tvName = itemView.findViewById<TextView>(R.id.tvName)
+        private val binding = ItemPlaylistBinding.bind(itemView)
 
         fun bind(playlist: Playlist) {
-            tvName.text = playlist.name
+            binding.tvTitle.text = playlist.name
+            binding.tvSubtitle.text = playlist.ownerName
+
+            Glide
+                .with(itemView.context)
+                .load(playlist.images?.first()?.url)
+                .transition(withCrossFade(DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()))
+                .into(binding.ivCover)
         }
     }
 

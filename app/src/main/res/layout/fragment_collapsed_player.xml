@@ -1,11 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<androidx.appcompat.widget.LinearLayoutCompat
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:background="@color/design_default_color_error"
+    android:layout_height="wrap_content"
+    android:background="#222"
+    android:orientation="horizontal"
     tools:context=".collapsedplayer.CollapsedPlayerFragment">
+    
+    <ImageView
+        android:id="@+id/ivCover"
+        android:layout_width="60dp"
+        android:layout_height="60dp" />
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/spacing_half"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/tvSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <ImageButton
+        android:id="@+id/ibPlayPause"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/spacing"
+        android:src="@android:drawable/ic_media_play" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -38,5 +38,7 @@ fun PlaylistResponse.toPlaylist(): Playlist {
     return Playlist(
         name = name,
         uri = uri,
+        images = images?.map { it.toImage() },
+        ownerName = owner?.displayName
     )
 }
