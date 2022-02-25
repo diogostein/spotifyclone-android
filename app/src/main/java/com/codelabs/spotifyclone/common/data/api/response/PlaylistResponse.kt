@@ -8,10 +8,6 @@ data class PlaylistResponse(
     val collaborative: Boolean?,
     @SerializedName("description")
     val description: String?,
-    @SerializedName("external_urls")
-    val externalUrls: ExternalUrlResponse?,
-    @SerializedName("href")
-    val href: String?,
     @SerializedName("id")
     val id: String?,
     @SerializedName("images")
@@ -24,10 +20,8 @@ data class PlaylistResponse(
     val primaryColor: String?,
     @SerializedName("public")
     val public: Boolean?,
-    @SerializedName("snapshot_id")
-    val snapshotId: String?,
     @SerializedName("tracks")
-    val tracks: TrackResponse?,
+    val tracks: TrackInfoResponse?,
     @SerializedName("type")
     val type: String?,
     @SerializedName("uri")
@@ -36,6 +30,7 @@ data class PlaylistResponse(
 
 fun PlaylistResponse.toPlaylist(): Playlist {
     return Playlist(
+        id = id,
         name = name,
         uri = uri,
         images = images?.map { it.toImage() },

@@ -3,8 +3,14 @@ package com.codelabs.spotifyclone.common.data.api.response
 import com.google.gson.annotations.SerializedName
 
 data class TrackResponse(
-    @SerializedName("href")
-    val href: String?,
-    @SerializedName("total")
-    val total: Int?
+    @SerializedName("artists")
+    val artists: List<ArtistResponse>?,
+    @SerializedName("duration_ms")
+    val durationMs: Int?,
+    @SerializedName("id")
+    val id: String?,
+    @SerializedName("name")
+    val name: String?,
+    @SerializedName("uri")
+    val uri: String?
 )

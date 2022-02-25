@@ -7,12 +7,12 @@ import com.codelabs.spotifyclone.playlist.domain.PlaylistRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class GetMyPlaylists(
+class GetPlaylistDetail(
     private val playlistRepository: PlaylistRepository,
-) : UseCase<UseCase.Empty, Result<Nothing, List<Playlist>>> {
+) : UseCase<String, Result<Nothing, Playlist>> {
 
-    override fun execute(input: UseCase.Empty): Flow<Result<Nothing, List<Playlist>>> = flow {
-        emit(playlistRepository.getMyPlaylists())
+    override fun execute(input: String): Flow<Result<Nothing, Playlist>> = flow {
+        emit(playlistRepository.getPlaylistDetail(input))
     }
 
 }

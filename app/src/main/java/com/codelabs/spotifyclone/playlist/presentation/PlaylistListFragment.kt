@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.codelabs.spotifyclone.R
+import com.codelabs.spotifyclone.common.domain.model.Playlist
 import com.codelabs.spotifyclone.common.presentation.UiState
 import com.codelabs.spotifyclone.databinding.FragmentPlaylistListBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,6 +22,7 @@ class PlaylistListFragment : Fragment(R.layout.fragment_playlist_list) {
     private val binding get() = _binding!!
 
     private val playlistAdapter = PlaylistAdapter()
+    private var onItemClick: ((String) -> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,6 +35,9 @@ class PlaylistListFragment : Fragment(R.layout.fragment_playlist_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+
+        playlistAdapter.setOnItemClickListener(::onItemClickListener)
 
         binding.listStateView.apply {
             setAdapter(playlistAdapter)
@@ -53,6 +59,14 @@ class PlaylistListFragment : Fragment(R.layout.fragment_playlist_list) {
         if (savedInstanceState == null) {
             viewModel.getMyPlaylists()
         }
+    }
+
+    private fun onItemClickListener(playlist: Playlist) {
+        onItemClick?.invoke(playlist.id!!)
+    }
+
+    fun setOnItemClickListener(listener: (String) -> Unit) {
+        PlaylistListFragment@this.onItemClick = listener
     }
 
     override fun onDestroyView() {

@@ -3,6 +3,7 @@ package com.codelabs.spotifyclone.playlist.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codelabs.spotifyclone.common.Result
+import com.codelabs.spotifyclone.common.domain.UseCase
 import com.codelabs.spotifyclone.common.domain.model.Playlist
 import com.codelabs.spotifyclone.common.domain.toMessage
 import com.codelabs.spotifyclone.common.presentation.UiState
@@ -25,7 +26,7 @@ class PlaylistListViewModel @Inject constructor(
     fun getMyPlaylists() {
         _stateFlow.value = UiState.Loading
 
-        getMyPlaylists.execute().onEach { result ->
+        getMyPlaylists.execute(UseCase.Empty()).onEach { result ->
             _stateFlow.value = when (result) {
                 is Result.Success -> UiState.Success(result.data)
                 is Result.Error -> UiState.Error()

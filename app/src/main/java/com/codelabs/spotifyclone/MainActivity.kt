@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.codelabs.spotifyclone.collapsedplayer.CollapsedPlayerFragment
 import com.codelabs.spotifyclone.common.SpotifyPlayer
 import com.codelabs.spotifyclone.databinding.ActivityMainBinding
+import com.codelabs.spotifyclone.playlist.presentation.PlaylistDetailFragment
 import com.codelabs.spotifyclone.playlist.presentation.PlaylistListFragment
 import com.spotify.protocol.types.PlayerState
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,12 +21,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
 
-        supportFragmentManager.beginTransaction()
-            .replace(binding.fcvMain.id, PlaylistListFragment())
-            .addToBackStack("PlaylistsFragment")
-            .commit()
+        PlaylistListFragment().let {
+            supportFragmentManager.beginTransaction()
+                .replace(binding.fcvMain.id, it)
+                .addToBackStack("PlaylistsFragment")
+                .commit()
+
+            it.setOnItemClickListener { id ->
+                supportFragmentManager.beginTransaction()
+                    .replace(binding.fcvMain.id, PlaylistDetailFragment.newInstance(id))
+                    .addToBackStack("PlaylistDetailFragment")
+                    .commit()
+            }
+        }
 
         supportFragmentManager.beginTransaction()
             .replace(binding.fcvCollapsedPlayer.id, CollapsedPlayerFragment())
