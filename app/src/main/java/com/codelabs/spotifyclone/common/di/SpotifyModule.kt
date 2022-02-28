@@ -1,6 +1,7 @@
 package com.codelabs.spotifyclone.common.di
 
 import com.codelabs.spotifyclone.common.Constants
+import com.codelabs.spotifyclone.common.SpotifyPlayer
 import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
 import dagger.Module
@@ -23,6 +24,12 @@ internal object SpotifyModule {
         ).also {
             it.setScopes(Constants.AuthorizationScopes.ALL.toTypedArray())
         }.build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSpotifyPlayer(): SpotifyPlayer {
+        return SpotifyPlayer()
     }
 
 }

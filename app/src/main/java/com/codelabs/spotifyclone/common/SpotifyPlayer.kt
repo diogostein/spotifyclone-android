@@ -1,16 +1,23 @@
 package com.codelabs.spotifyclone.common
 
+import android.graphics.Bitmap
 import android.util.Log
 import com.codelabs.spotifyclone.SpotifyCloneApplication
 import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector
 import com.spotify.android.appremote.api.SpotifyAppRemote
+import com.spotify.protocol.types.Image
+import com.spotify.protocol.types.ImageUri
 import com.spotify.protocol.types.PlayerState
 
 class SpotifyPlayer {
     enum class ConnectionResult { CONNECTED, FAILURE }
+    enum class State { IDLE, RESUMED, PAUSED }
 
     var spotifyAppRemote: SpotifyAppRemote? = null
+
+    private var _currentState = State.IDLE
+    val currentState get() = _currentState
 
     fun connect(result: (ConnectionResult, Throwable?) -> Unit) {
         disconnect()
@@ -34,10 +41,9 @@ class SpotifyPlayer {
         eventCallback: (PlayerState) -> Unit,
         errorCallback: (Throwable) -> Unit
     ) {
-        spotifyAppRemote?.playerApi?.subscribeToPlayerState()?.apply {
-            setEventCallback { eventCallback(it) }
-            setErrorCallback { errorCallback(it) }
-        }
+        spotifyAppRemote?.playerApi?.subscribeToPlayerState()
+            ?.setEventCallback { eventCallback(it) }
+            ?.setErrorCallback { errorCallback(it) }
     }
 
     fun disconnect() {
@@ -45,7 +51,31 @@ class SpotifyPlayer {
     }
 
     fun play(uri: String) {
+        _currentState = State.RESUMED
         spotifyAppRemote?.playerApi?.play(uri)
+    }
+
+    fun resume() {
+        _currentState = State.RESUMED
+        spotifyAppRemote?.playerApi?.resume()
+    }
+
+    fun pause() {
+        _currentState = State.PAUSED
+        spotifyAppRemote?.playerApi?.pause()
+    }
+
+    fun getImage(
+        imageUri: ImageUri,
+        dimension: Image.Dimension,
+        resultCallback: (Bitmap) -> Unit,
+        errorCallback: (Throwable) -> Unit
+    ) {
+        spotifyAppRemote
+            ?.imagesApi
+            ?.getImage(imageUri, dimension)
+            ?.setResultCallback(resultCallback)
+            ?.setErrorCallback(errorCallback)
     }
 
     companion object {

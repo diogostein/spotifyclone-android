@@ -20,7 +20,7 @@ class PlaylistRemoteDataSourceImpl(
 
     override suspend fun getPlaylistTracks(id: String): DataWrapperResponse<TrackInfoResponse> {
         return spotifyService.getPlaylistTracks(id,
-            "items(added_at,track(id,name,images,uri,duration_ms,artists(name)))")
+            "items(added_at,track(id,name,images,uri,duration_ms,artists(name),album(images)))")
     }
 
 }

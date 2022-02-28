@@ -20,6 +20,7 @@ fun TrackInfoResponse.toTrack(): Track {
         id = track?.id,
         name = track?.name,
         uri = track?.uri,
+        album = track?.album?.toAlbum(),
         addedAt = addedAt?.toDateTime()
     )
 }

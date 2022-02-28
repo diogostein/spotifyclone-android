@@ -1,6 +1,5 @@
 package com.codelabs.spotifyclone.playlist.presentation
 
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,26 +7,26 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asLiveData
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.codelabs.spotifyclone.R
+import com.codelabs.spotifyclone.common.domain.model.Track
 import com.codelabs.spotifyclone.common.presentation.UiState
 import com.codelabs.spotifyclone.databinding.FragmentPlaylistDetailBinding
-import com.codelabs.spotifyclone.databinding.FragmentPlaylistListBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
-    private val viewModel: PlaylistDetailViewModel by viewModels()
+    private val viewModel: PlaylistDetailViewModel by activityViewModels()
 
     private var _binding: FragmentPlaylistDetailBinding? = null
     private val binding get() = _binding!!
 
     private var playlistId: String? = null
-    //private val playlistTracksAdapter = PlaylistTracksAdapter()
+    private val playlistTracksAdapter = PlaylistTracksAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,15 +50,18 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
             window.statusBarColor = ContextCompat.getColor(this, android.R.color.transparent)
         }
 
+        playlistTracksAdapter.setOnItemClickListener(::onItemClickListener)
+
         binding.listStateView.apply {
-            //setAdapter(playlistTracksAdapter)
-            setOnRetryClickListener { viewModel.getPlaylistTracks("") }
+            setAdapter(playlistTracksAdapter)
+            setOnRetryClickListener { viewModel.getPlaylistTracks(playlistId!!) }
         }
 
         viewModel.detailStateFlow.asLiveData().observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {}
                 is UiState.Success -> {
+                    binding.collapsingToolbar.title = state.data?.name ?: ""
                     Glide
                         .with(this)
                         .load(state.data?.images?.first()?.url)
@@ -75,9 +77,28 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
             }
         }
 
+        viewModel.tracksStateFlow.asLiveData().observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiState.Loading -> binding.listStateView.showProgressIndicator()
+                is UiState.Success -> {
+                    state.data?.let {
+                        playlistTracksAdapter.add(it)
+                        binding.listStateView.showRecyclerView()
+                    }
+                }
+                is UiState.Error -> binding.listStateView.showError(state.message)
+                else -> {}
+            }
+        }
+
         if (savedInstanceState == null) {
             viewModel.getPlaylistDetail(playlistId!!)
+            viewModel.getPlaylistTracks(playlistId!!)
         }
+    }
+
+    private fun onItemClickListener(track: Track) {
+        viewModel.selectTrack(track)
     }
 
     override fun onDestroyView() {

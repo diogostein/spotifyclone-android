@@ -8,5 +8,6 @@ data class Track(
     val id: String?,
     val name: String?,
     val uri: String?,
+    val album: Album?,
     val addedAt: Date?
 )

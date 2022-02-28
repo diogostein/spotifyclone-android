@@ -9,6 +9,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withC
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.codelabs.spotifyclone.R
 import com.codelabs.spotifyclone.common.domain.model.Playlist
+import com.codelabs.spotifyclone.common.helper.GlideHelper
 import com.codelabs.spotifyclone.databinding.ItemPlaylistBinding
 
 class PlaylistAdapter : RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder>() {
@@ -48,11 +49,7 @@ class PlaylistAdapter : RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder>
             binding.tvTitle.text = playlist.name
             binding.tvSubtitle.text = playlist.ownerName
 
-            Glide
-                .with(itemView.context)
-                .load(playlist.images?.first()?.url)
-                .transition(withCrossFade(DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()))
-                .into(binding.ivCover)
+            GlideHelper.load(playlist.images?.first()?.url, binding.ivCover)
 
             itemView.setOnClickListener { listener?.invoke(playlist) }
         }

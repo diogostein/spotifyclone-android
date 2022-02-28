@@ -12,5 +12,7 @@ data class TrackResponse(
     @SerializedName("name")
     val name: String?,
     @SerializedName("uri")
-    val uri: String?
+    val uri: String?,
+    @SerializedName("album")
+    val album: AlbumResponse?
 )
