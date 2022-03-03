@@ -8,24 +8,27 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.codelabs.spotifyclone.R
+import com.codelabs.spotifyclone.collapsedplayer.CollapsedPlayerViewModel
+import com.codelabs.spotifyclone.common.domain.model.Playlist
 import com.codelabs.spotifyclone.common.domain.model.Track
+import com.codelabs.spotifyclone.common.helper.GlideHelper
 import com.codelabs.spotifyclone.common.presentation.UiState
 import com.codelabs.spotifyclone.databinding.FragmentPlaylistDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
-    private val viewModel: PlaylistDetailViewModel by activityViewModels()
+    private val playlistDetailViewModel: PlaylistDetailViewModel by viewModels()
+    private val collapsedPlayerViewModel: CollapsedPlayerViewModel by activityViewModels()
 
     private var _binding: FragmentPlaylistDetailBinding? = null
     private val binding get() = _binding!!
 
     private var playlistId: String? = null
+    private var currentPlaylist: Playlist? = null
     private val playlistTracksAdapter = PlaylistTracksAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,34 +53,47 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
             window.statusBarColor = ContextCompat.getColor(this, android.R.color.transparent)
         }
 
+        binding.fabPlayback.setOnClickListener {
+            currentPlaylist?.uri?.let { currentPlaylistUri ->
+                if (currentPlaylistUri == collapsedPlayerViewModel.getCurrentUri()) {
+                    collapsedPlayerViewModel.resumeOrPause()
+                } else {
+                    collapsedPlayerViewModel.play(currentPlaylistUri)
+                }
+            }
+        }
+
         playlistTracksAdapter.setOnItemClickListener(::onItemClickListener)
 
         binding.listStateView.apply {
             setAdapter(playlistTracksAdapter)
-            setOnRetryClickListener { viewModel.getPlaylistTracks(playlistId!!) }
+            setOnRetryClickListener { playlistDetailViewModel.getPlaylistTracks(playlistId!!) }
         }
 
-        viewModel.detailStateFlow.asLiveData().observe(viewLifecycleOwner) { state ->
+        playlistDetailViewModel.detailStateFlow.asLiveData().observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {}
                 is UiState.Success -> {
-                    binding.collapsingToolbar.title = state.data?.name ?: ""
-                    Glide
-                        .with(this)
-                        .load(state.data?.images?.first()?.url)
-                        .transition(
-                            DrawableTransitionOptions.withCrossFade(
-                                DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build()
-                            )
-                        )
-                        .into(binding.ivCollapsing)
+                    currentPlaylist = state.data?.also {
+                        binding.collapsingToolbar.title = it.name
+                        binding.tvPlaylistName.text = it.name
+                        binding.tvUserName.text = it.ownerName
+                        GlideHelper.load(it.images?.first()?.url, binding.ivCollapsing)
+
+                        it.uri?.let { currentPlaylistUri ->
+                            if (currentPlaylistUri == collapsedPlayerViewModel.getCurrentUri()
+                                && collapsedPlayerViewModel.playerState.value?.isPaused == false) {
+                                binding.fabPlayback.setImageResource(android.R.drawable.ic_media_pause)
+                            }
+                        }
+                    }
                 }
                 is UiState.Error -> activity?.supportFragmentManager?.popBackStack()
                 else -> {}
             }
         }
 
-        viewModel.tracksStateFlow.asLiveData().observe(viewLifecycleOwner) { state ->
+        playlistDetailViewModel.tracksStateFlow.asLiveData().observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> binding.listStateView.showProgressIndicator()
                 is UiState.Success -> {
@@ -91,14 +107,26 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
             }
         }
 
+        collapsedPlayerViewModel.playerState.observe(viewLifecycleOwner) { playerState ->
+            currentPlaylist?.uri?.let { currentPlaylistUri ->
+                if (currentPlaylistUri == collapsedPlayerViewModel.getCurrentUri()) {
+                   if (playerState.isPaused) {
+                       binding.fabPlayback.setImageResource(android.R.drawable.ic_media_play)
+                   } else {
+                       binding.fabPlayback.setImageResource(android.R.drawable.ic_media_pause)
+                   }
+                }
+            }
+        }
+
         if (savedInstanceState == null) {
-            viewModel.getPlaylistDetail(playlistId!!)
-            viewModel.getPlaylistTracks(playlistId!!)
+            playlistDetailViewModel.getPlaylistDetail(playlistId!!)
+            playlistDetailViewModel.getPlaylistTracks(playlistId!!)
         }
     }
 
-    private fun onItemClickListener(track: Track) {
-        viewModel.selectTrack(track)
+    private fun onItemClickListener(track: Track, position: Int) {
+        collapsedPlayerViewModel.skipToIndex(currentPlaylist?.uri!!, position)
     }
 
     override fun onDestroyView() {

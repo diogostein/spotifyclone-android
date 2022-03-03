@@ -15,7 +15,7 @@ class PlaylistRemoteDataSourceImpl(
     }
 
     override suspend fun getPlaylistDetail(id: String): PlaylistResponse {
-        return spotifyService.getPlaylist(id, "name,owner(display_name),images")
+        return spotifyService.getPlaylist(id, "id,name,owner(display_name),images,uri")
     }
 
     override suspend fun getPlaylistTracks(id: String): DataWrapperResponse<TrackInfoResponse> {

@@ -1,7 +1,5 @@
 package com.codelabs.spotifyclone.playlist.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codelabs.spotifyclone.common.Result
@@ -30,9 +28,6 @@ class PlaylistDetailViewModel @Inject constructor(
     private val _tracksStateFlow = MutableStateFlow<UiState<List<Track>>>(UiState.Initial)
     val tracksStateFlow: StateFlow<UiState<List<Track>>> = _tracksStateFlow
 
-    private val _selectedTrack = MutableLiveData<Track>()
-    val selectedTrack: LiveData<Track> = _selectedTrack
-
     fun getPlaylistDetail(id: String) {
         _detailStateFlow.value = UiState.Loading
 
@@ -55,10 +50,6 @@ class PlaylistDetailViewModel @Inject constructor(
                 is Result.Exception -> UiState.Error(result.cause.toMessage())
             }
         }.launchIn(viewModelScope)
-    }
-
-    fun selectTrack(track: Track) {
-        _selectedTrack.value = track
     }
 
 }

@@ -1,26 +1,19 @@
 package com.codelabs.spotifyclone
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.viewModels
 import com.codelabs.spotifyclone.collapsedplayer.CollapsedPlayerFragment
 import com.codelabs.spotifyclone.collapsedplayer.CollapsedPlayerViewModel
-import com.codelabs.spotifyclone.common.SpotifyPlayer
 import com.codelabs.spotifyclone.databinding.ActivityMainBinding
 import com.codelabs.spotifyclone.playlist.presentation.PlaylistDetailFragment
 import com.codelabs.spotifyclone.playlist.presentation.PlaylistDetailViewModel
 import com.codelabs.spotifyclone.playlist.presentation.PlaylistListFragment
-import com.spotify.protocol.types.PlayerState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val playlistDetailViewModel: PlaylistDetailViewModel by viewModels()
     private val collapsedPlayerViewModel: CollapsedPlayerViewModel by viewModels()
-
-    //private val spotifyPlayer = SpotifyPlayer()
 
     private lateinit var binding: ActivityMainBinding
 
@@ -48,9 +41,6 @@ class MainActivity : AppCompatActivity() {
             .addToBackStack("CollapsedPlayerFragment")
             .commit()
 
-        playlistDetailViewModel.selectedTrack.observe(this) { track ->
-            collapsedPlayerViewModel.play(track.uri ?: "")
-        }
     }
 
     override fun onStart() {

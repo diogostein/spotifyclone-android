@@ -33,8 +33,8 @@ class CollapsedPlayerFragment : Fragment(R.layout.fragment_collapsed_player) {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.selectedTrack.observe(viewLifecycleOwner) { track ->
-            binding.tvTitle.text = track.name
-            binding.tvSubtitle.text = track.artist.name
+            binding.tvTitle.text = track?.name
+            binding.tvSubtitle.text = track?.artist?.name
         }
 
         viewModel.coverBitmap.observe(viewLifecycleOwner) { bitmap ->

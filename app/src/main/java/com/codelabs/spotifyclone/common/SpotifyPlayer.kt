@@ -19,6 +19,9 @@ class SpotifyPlayer {
     private var _currentState = State.IDLE
     val currentState get() = _currentState
 
+    private var _currentUri: String? = null
+    val currentUri get() = _currentUri
+
     fun connect(result: (ConnectionResult, Throwable?) -> Unit) {
         disconnect()
         SpotifyAppRemote.connect(
@@ -51,6 +54,7 @@ class SpotifyPlayer {
     }
 
     fun play(uri: String) {
+        _currentUri = uri
         _currentState = State.RESUMED
         spotifyAppRemote?.playerApi?.play(uri)
     }
@@ -63,6 +67,11 @@ class SpotifyPlayer {
     fun pause() {
         _currentState = State.PAUSED
         spotifyAppRemote?.playerApi?.pause()
+    }
+
+    fun skipToIndex(uri: String, index: Int) {
+        _currentUri = uri
+        spotifyAppRemote?.playerApi?.skipToIndex(uri, index)
     }
 
     fun getImage(

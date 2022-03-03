@@ -17,8 +17,8 @@ class CollapsedPlayerViewModel @Inject constructor(
     private val spotifyPlayer: SpotifyPlayer,
 ) : ViewModel() {
 
-    private val _selectedTrack = MutableLiveData<Track>()
-    val selectedTrack: LiveData<Track> = _selectedTrack
+    private val _selectedTrack = MutableLiveData<Track?>()
+    val selectedTrack: LiveData<Track?> = _selectedTrack
 
     private val _coverBitmap = MutableLiveData<Bitmap?>()
     val coverBitmap: LiveData<Bitmap?> = _coverBitmap
@@ -45,6 +45,7 @@ class CollapsedPlayerViewModel @Inject constructor(
     }
 
     fun play(uri: String) {
+        Log.d("DS", uri)
         spotifyPlayer.play(uri)
     }
 
@@ -56,13 +57,22 @@ class CollapsedPlayerViewModel @Inject constructor(
         }
     }
 
+    fun skipToIndex(uri: String, index: Int) {
+        spotifyPlayer.skipToIndex(uri, index)
+    }
+
+    fun getCurrentUri(): String? {
+        return spotifyPlayer.currentUri
+    }
+
     private fun onPlayerStateEvent(playerState: PlayerState) {
         updateTrack(playerState)
         _playerState.value = playerState
     }
 
     private fun updateTrack(playerState: PlayerState) {
-        if (_selectedTrack.value?.uri != playerState.track.uri) {
+        Log.d("DS", playerState.toString())
+        if (playerState.track != null && _selectedTrack.value?.uri != playerState.track.uri) {
             _selectedTrack.value = playerState.track
 
             spotifyPlayer.getImage(playerState.track.imageUri, Image.Dimension.SMALL, {
