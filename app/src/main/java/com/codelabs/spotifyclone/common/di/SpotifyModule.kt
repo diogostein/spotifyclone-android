@@ -2,6 +2,7 @@ package com.codelabs.spotifyclone.common.di
 
 import com.codelabs.spotifyclone.common.Constants
 import com.codelabs.spotifyclone.common.SpotifyPlayer
+import com.codelabs.spotifyclone.common.util.ProgressTimeTicker
 import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
 import dagger.Module
@@ -30,6 +31,12 @@ internal object SpotifyModule {
     @Singleton
     fun provideSpotifyPlayer(): SpotifyPlayer {
         return SpotifyPlayer()
+    }
+
+    @Provides
+    @Singleton
+    fun provideProgressTimerTicker(): ProgressTimeTicker {
+        return ProgressTimeTicker()
     }
 
 }

@@ -9,8 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:fitsSystemWindows="true"
+        android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -20,7 +19,6 @@
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:statusBarScrim="?attr/colorPrimary"
-            app:expandedTitleMargin="@dimen/spacing"
             app:expandedTitleGravity="top"
             app:expandedTitleTextColor="@android:color/transparent"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
@@ -29,11 +27,12 @@
                 android:id="@+id/ivCollapsing"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
+                android:layout_marginVertical="@dimen/spacing"
                 android:fitsSystemWindows="true"
                 android:layout_gravity="center"
                 android:scaleType="centerCrop"
                 android:contentDescription="@string/app_name"
-                app:layout_collapseMode="parallax" />
+                app:layout_collapseMode="none" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -71,13 +70,27 @@
                 android:paddingHorizontal="@dimen/spacing"
                 android:textColor="@color/white" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabPlayback"
-                android:layout_width="wrap_content"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:src="@android:drawable/ic_input_add"
-                android:layout_marginHorizontal="@dimen/spacing" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical|end">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:src="@android:drawable/ic_dialog_alert" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabPlayback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/ic_input_add"
+                    android:tint="@color/color_primary"
+                    android:layout_marginHorizontal="@dimen/spacing" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <com.codelabs.spotifyclone.common.presentation.widgets.ListStateView
                 android:id="@+id/listStateView"

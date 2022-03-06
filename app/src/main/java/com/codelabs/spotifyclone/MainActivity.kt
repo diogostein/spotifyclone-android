@@ -7,7 +7,6 @@ import com.codelabs.spotifyclone.collapsedplayer.CollapsedPlayerFragment
 import com.codelabs.spotifyclone.collapsedplayer.CollapsedPlayerViewModel
 import com.codelabs.spotifyclone.databinding.ActivityMainBinding
 import com.codelabs.spotifyclone.playlist.presentation.PlaylistDetailFragment
-import com.codelabs.spotifyclone.playlist.presentation.PlaylistDetailViewModel
 import com.codelabs.spotifyclone.playlist.presentation.PlaylistListFragment
 import dagger.hilt.android.AndroidEntryPoint
 

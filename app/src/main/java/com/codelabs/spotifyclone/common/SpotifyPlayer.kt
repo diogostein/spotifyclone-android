@@ -12,12 +12,8 @@ import com.spotify.protocol.types.PlayerState
 
 class SpotifyPlayer {
     enum class ConnectionResult { CONNECTED, FAILURE }
-    enum class State { IDLE, RESUMED, PAUSED }
 
     var spotifyAppRemote: SpotifyAppRemote? = null
-
-    private var _currentState = State.IDLE
-    val currentState get() = _currentState
 
     private var _currentUri: String? = null
     val currentUri get() = _currentUri
@@ -55,17 +51,14 @@ class SpotifyPlayer {
 
     fun play(uri: String) {
         _currentUri = uri
-        _currentState = State.RESUMED
         spotifyAppRemote?.playerApi?.play(uri)
     }
 
     fun resume() {
-        _currentState = State.RESUMED
         spotifyAppRemote?.playerApi?.resume()
     }
 
     fun pause() {
-        _currentState = State.PAUSED
         spotifyAppRemote?.playerApi?.pause()
     }
 

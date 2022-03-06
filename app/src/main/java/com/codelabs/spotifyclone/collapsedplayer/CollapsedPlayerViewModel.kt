@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.codelabs.spotifyclone.common.SpotifyPlayer
+import com.codelabs.spotifyclone.common.util.ProgressTimeTicker
+import com.codelabs.spotifyclone.common.util.toMinutesAndSeconds
 import com.spotify.protocol.types.Image
 import com.spotify.protocol.types.PlayerState
 import com.spotify.protocol.types.Track
@@ -15,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CollapsedPlayerViewModel @Inject constructor(
     private val spotifyPlayer: SpotifyPlayer,
+    private val progressTimeTicker: ProgressTimeTicker,
 ) : ViewModel() {
 
     private val _selectedTrack = MutableLiveData<Track?>()
@@ -26,12 +29,16 @@ class CollapsedPlayerViewModel @Inject constructor(
     private val _playerState = MutableLiveData<PlayerState>()
     val playerState: LiveData<PlayerState> = _playerState
 
+    private val _uiProgressState = MutableLiveData<UiProgressState>()
+    val uiProgressState: LiveData<UiProgressState> = _uiProgressState
+
     fun connect(callback: ((SpotifyPlayer.ConnectionResult, Throwable?) -> Unit)? = null) {
         disconnect()
         spotifyPlayer.connect { result, throwable ->
             when (result) {
                 SpotifyPlayer.ConnectionResult.CONNECTED -> {
                     spotifyPlayer.subscribeToPlayerState(::onPlayerStateEvent, ::onPlayerStateError)
+                    progressTimeTicker.setOnProgressTickListener(::onProgressTick)
                     callback?.invoke(result, null)
                 }
                 SpotifyPlayer.ConnectionResult.FAILURE -> callback?.invoke(result, throwable)
@@ -41,19 +48,19 @@ class CollapsedPlayerViewModel @Inject constructor(
     }
 
     fun disconnect() {
+        progressTimeTicker.dispose()
         spotifyPlayer.disconnect()
     }
 
     fun play(uri: String) {
-        Log.d("DS", uri)
         spotifyPlayer.play(uri)
     }
 
     fun resumeOrPause() {
-        when (spotifyPlayer.currentState) {
-            SpotifyPlayer.State.RESUMED -> spotifyPlayer.pause()
-            SpotifyPlayer.State.PAUSED -> spotifyPlayer.resume()
-            else -> {}
+        if (playerState.value?.isPaused == true) {
+            spotifyPlayer.resume()
+        } else {
+            spotifyPlayer.pause()
         }
     }
 
@@ -65,9 +72,32 @@ class CollapsedPlayerViewModel @Inject constructor(
         return spotifyPlayer.currentUri
     }
 
+    private fun onProgressTick(progress: Double, positionInMs: Long, durationInMs: Long) {
+        _uiProgressState.value = UiProgressState(
+            progress.toInt(),
+            positionInMs.toMinutesAndSeconds(),
+            durationInMs.toMinutesAndSeconds()
+        )
+    }
+
     private fun onPlayerStateEvent(playerState: PlayerState) {
         updateTrack(playerState)
+        updateTimeTicker(playerState)
         _playerState.value = playerState
+    }
+
+    private fun onPlayerStateError(throwable: Throwable) {
+        Log.d("DS", throwable.stackTraceToString())
+    }
+
+    private fun updateTimeTicker(playerState: PlayerState) {
+        with (playerState) {
+            if (isPaused) {
+                progressTimeTicker.stop()
+            } else {
+                progressTimeTicker.start(track.duration, playbackPosition)
+            }
+        }
     }
 
     private fun updateTrack(playerState: PlayerState) {
@@ -83,7 +113,9 @@ class CollapsedPlayerViewModel @Inject constructor(
         }
     }
 
-    private fun onPlayerStateError(throwable: Throwable) {
-        Log.d("DS", throwable.stackTraceToString())
-    }
+    data class UiProgressState(
+        val progress: Int,
+        val elapsedTime: String,
+        val duration: String
+    )
 }
