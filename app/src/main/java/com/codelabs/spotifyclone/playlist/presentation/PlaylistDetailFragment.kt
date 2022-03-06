@@ -111,17 +111,20 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
             currentPlaylist?.uri?.let { currentPlaylistUri ->
                 if (currentPlaylistUri == collapsedPlayerViewModel.getCurrentUri()) {
                    if (playerState.isPaused) {
-                       binding.fabPlayback.setImageResource(android.R.drawable.ic_media_play)
+                       binding.fabPlayback.setImageResource(R.drawable.ic_play)
                    } else {
-                       binding.fabPlayback.setImageResource(android.R.drawable.ic_media_pause)
+                       binding.fabPlayback.setImageResource(R.drawable.ic_pause)
                    }
                 }
             }
         }
 
-        if (savedInstanceState == null) {
-            playlistDetailViewModel.getPlaylistDetail(playlistId!!)
-            playlistDetailViewModel.getPlaylistTracks(playlistId!!)
+        with (playlistDetailViewModel) {
+            if (detailStateFlow.value is UiState.Initial
+                || tracksStateFlow.value is UiState.Initial) {
+                    getPlaylistDetail(playlistId!!)
+                    getPlaylistTracks(playlistId!!)
+            }
         }
     }
 

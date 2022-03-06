@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#222"
     android:orientation="vertical"
     tools:context=".collapsedplayer.CollapsedPlayerFragment">
@@ -22,6 +22,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_half"
         android:orientation="horizontal">
 
         <ImageView
@@ -41,12 +42,20 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:ellipsize="marquee"
+                android:scrollHorizontally="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:singleLine="true"/>
 
             <TextView
                 android:id="@+id/tvSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -55,8 +64,10 @@
             android:id="@+id/ibPlayPause"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/spacing"
-            android:src="@android:drawable/ic_media_play" />
+            android:paddingHorizontal="@dimen/spacing_half"
+            android:src="@drawable/ic_play"
+            app:tint="@color/white"
+            android:background="?attr/selectableItemBackgroundBorderless" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

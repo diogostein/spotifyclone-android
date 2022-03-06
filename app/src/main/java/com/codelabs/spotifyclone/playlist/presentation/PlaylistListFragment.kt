@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.codelabs.spotifyclone.R
@@ -22,7 +23,6 @@ class PlaylistListFragment : Fragment(R.layout.fragment_playlist_list) {
     private val binding get() = _binding!!
 
     private val playlistAdapter = PlaylistAdapter()
-    private var onItemClick: ((String) -> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,18 +55,15 @@ class PlaylistListFragment : Fragment(R.layout.fragment_playlist_list) {
                 else -> {}
             }
         }
-
-        if (savedInstanceState == null) {
-            viewModel.getMyPlaylists()
-        }
     }
 
     private fun onItemClickListener(playlist: Playlist) {
-        onItemClick?.invoke(playlist.id!!)
-    }
-
-    fun setOnItemClickListener(listener: (String) -> Unit) {
-        PlaylistListFragment@this.onItemClick = listener
+        activity?.apply {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fcvMain, PlaylistDetailFragment.newInstance(playlist.id!!))
+                .addToBackStack("PlaylistDetailFragment")
+                .commit()
+        }
     }
 
     override fun onDestroyView() {

@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.codelabs.spotifyclone.R
 import com.codelabs.spotifyclone.common.helper.GlideHelper
-import com.codelabs.spotifyclone.common.util.ProgressTimeTicker
 import com.codelabs.spotifyclone.databinding.FragmentCollapsedPlayerBinding
 
 class CollapsedPlayerFragment : Fragment(R.layout.fragment_collapsed_player) {
@@ -51,9 +50,9 @@ class CollapsedPlayerFragment : Fragment(R.layout.fragment_collapsed_player) {
 
         viewModel.playerState.observe(viewLifecycleOwner) { playerState ->
             if (playerState.isPaused) {
-                binding.ibPlayPause.setImageResource(android.R.drawable.ic_media_play)
+                binding.ibPlayPause.setImageResource(R.drawable.ic_play)
             } else {
-                binding.ibPlayPause.setImageResource(android.R.drawable.ic_media_pause)
+                binding.ibPlayPause.setImageResource(R.drawable.ic_pause)
             }
         }
 

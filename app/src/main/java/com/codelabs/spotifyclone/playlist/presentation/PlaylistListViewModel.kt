@@ -23,6 +23,10 @@ class PlaylistListViewModel @Inject constructor(
     private val _stateFlow = MutableStateFlow<UiState<List<Playlist>>>(UiState.Initial)
     val stateFlow: StateFlow<UiState<List<Playlist>>> = _stateFlow
 
+    init {
+        getMyPlaylists()
+    }
+
     fun getMyPlaylists() {
         _stateFlow.value = UiState.Loading
 
