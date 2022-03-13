@@ -94,7 +94,7 @@
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <com.codelabs.spotifyclone.common.presentation.widgets.ListStateView
+            <com.codelabs.spotifyclone.core.presentation.widgets.ListStateView
                 android:id="@+id/listStateView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

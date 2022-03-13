@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".playlist.presentation.PlaylistListFragment">
+    tools:context=".features.playlist.presentation.listing.PlaylistListFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -15,7 +15,7 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
-    <com.codelabs.spotifyclone.common.presentation.widgets.ListStateView
+    <com.codelabs.spotifyclone.core.presentation.widgets.ListStateView
         android:id="@+id/listStateView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

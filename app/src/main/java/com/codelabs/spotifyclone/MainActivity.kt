@@ -3,14 +3,12 @@ package com.codelabs.spotifyclone
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.viewModels
-import com.codelabs.spotifyclone.collapsedplayer.CollapsedPlayerFragment
-import com.codelabs.spotifyclone.collapsedplayer.CollapsedPlayerViewModel
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
+import com.codelabs.spotifyclone.features.collapsedplayer.CollapsedPlayerFragment
+import com.codelabs.spotifyclone.features.collapsedplayer.CollapsedPlayerViewModel
 import com.codelabs.spotifyclone.databinding.ActivityMainBinding
-import com.codelabs.spotifyclone.playlist.presentation.PlaylistDetailFragment
-import com.codelabs.spotifyclone.playlist.presentation.PlaylistDetailViewModel
-import com.codelabs.spotifyclone.playlist.presentation.PlaylistListFragment
-import com.codelabs.spotifyclone.playlist.presentation.PlaylistListViewModel
+import com.codelabs.spotifyclone.features.playlist.presentation.listing.PlaylistListFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,17 +23,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(binding.fcvMain.id, PlaylistListFragment())
-                .addToBackStack("PlaylistsFragment")
-                .commit()
+            supportFragmentManager.commit {
+                replace<PlaylistListFragment>(R.id.fcvMain)
+                setReorderingAllowed(true)
+                addToBackStack(null)
+            }
 
-            supportFragmentManager.beginTransaction()
-                .replace(binding.fcvCollapsedPlayer.id, CollapsedPlayerFragment())
-                .addToBackStack("CollapsedPlayerFragment")
-                .commit()
+            supportFragmentManager.commit {
+                replace<CollapsedPlayerFragment>(R.id.fcvCollapsedPlayer)
+                setReorderingAllowed(true)
+                addToBackStack(null)
+            }
         }
-
     }
 
     override fun onStart() {

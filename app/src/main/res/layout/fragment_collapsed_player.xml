@@ -6,12 +6,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#222"
     android:orientation="vertical"
-    tools:context=".collapsedplayer.CollapsedPlayerFragment">
+    tools:context=".features.collapsedplayer.CollapsedPlayerFragment">
 
     <androidx.appcompat.widget.AppCompatSeekBar
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="2dp"
         android:max="1000"
         android:progressTint="@color/white"
         android:thumbTint="@android:color/transparent"
@@ -27,8 +27,8 @@
 
         <ImageView
             android:id="@+id/ivCover"
-            android:layout_width="60dp"
-            android:layout_height="60dp" />
+            android:layout_width="56dp"
+            android:layout_height="56dp" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="0dp"
@@ -48,7 +48,7 @@
                 android:scrollHorizontally="true"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:singleLine="true"/>
+                android:singleLine="true" />
 
             <TextView
                 android:id="@+id/tvSubtitle"
