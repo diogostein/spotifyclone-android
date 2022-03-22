@@ -1,23 +1,27 @@
 package com.codelabs.spotifyclone.features.playlist.presentation.detail
 
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
+import androidx.palette.graphics.Palette
 import com.codelabs.spotifyclone.R
-import com.codelabs.spotifyclone.features.collapsedplayer.CollapsedPlayerViewModel
 import com.codelabs.spotifyclone.core.domain.model.Playlist
 import com.codelabs.spotifyclone.core.domain.model.Track
 import com.codelabs.spotifyclone.core.helper.GlideHelper
 import com.codelabs.spotifyclone.core.presentation.UiState
 import com.codelabs.spotifyclone.databinding.FragmentPlaylistDetailBinding
+import com.codelabs.spotifyclone.features.collapsedplayer.CollapsedPlayerViewModel
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
@@ -73,21 +77,7 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
         playlistDetailViewModel.detailStateFlow.asLiveData().observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {}
-                is UiState.Success -> {
-                    currentPlaylist = state.data?.also {
-                        binding.collapsingToolbar.title = it.name
-                        binding.tvPlaylistName.text = it.name
-                        binding.tvUserName.text = it.ownerName
-                        GlideHelper.load(it.images?.first()?.url, binding.ivCollapsing)
-
-                        it.uri?.let { currentPlaylistUri ->
-                            if (currentPlaylistUri == collapsedPlayerViewModel.getCurrentUri()
-                                && collapsedPlayerViewModel.playerState.value?.isPaused == false) {
-                                binding.fabPlayback.setImageResource(android.R.drawable.ic_media_pause)
-                            }
-                        }
-                    }
-                }
+                is UiState.Success -> currentPlaylist = state.data?.also { updatePlaylistDetail(it) }
                 is UiState.Error -> activity?.supportFragmentManager?.popBackStack()
                 else -> {}
             }
@@ -124,6 +114,33 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
                 || tracksStateFlow.value is UiState.Initial) {
                     getPlaylistDetail(playlistId!!)
                     getPlaylistTracks(playlistId!!)
+            }
+        }
+    }
+
+    private fun updatePlaylistDetail(playlist: Playlist) {
+        binding.collapsingToolbar.title = playlist.name
+        binding.tvPlaylistName.text = playlist.name
+        binding.tvUserName.text = playlist.ownerName
+
+        playlist.coverImageUrl?.let { coverImageUrl ->
+            GlideHelper.load(coverImageUrl, binding.ivCollapsing)
+            GlideHelper.toBitmap(coverImageUrl) { bitmap ->
+                Palette.from(bitmap).generate().mutedSwatch?.rgb?.let { color ->
+                    binding.appBarLayout.background = GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        intArrayOf(color,
+                            ContextCompat.getColor(
+                                requireContext(), R.color.color_primary_variant))
+                    )
+                }
+            }
+        }
+
+        playlist.uri?.let { currentPlaylistUri ->
+            if (currentPlaylistUri == collapsedPlayerViewModel.getCurrentUri()
+                && collapsedPlayerViewModel.playerState.value?.isPaused == false) {
+                binding.fabPlayback.setImageResource(android.R.drawable.ic_media_pause)
             }
         }
     }

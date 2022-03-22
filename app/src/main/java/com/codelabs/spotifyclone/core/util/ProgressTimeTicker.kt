@@ -31,7 +31,7 @@ class ProgressTimeTicker(
         job = tickerFlow(refreshRateInMs).onEach {
             positionInMs = SystemClock.elapsedRealtime() - startInMs + initialPositionInMs
             val progress = (positionInMs.toDouble() / durationInMs.toDouble()) * precision
-            Log.d("DS", "duration: $durationInMs, pos: $positionInMs, progress: $progress, ${progress.toInt()}")
+            //Log.d("DS", "duration: $durationInMs, pos: $positionInMs, progress: $progress, ${progress.toInt()}")
             withContext(Main) {
                 onProgressTick?.invoke(progress, positionInMs, durationInMs)
             }

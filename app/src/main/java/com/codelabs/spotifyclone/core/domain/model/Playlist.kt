@@ -6,4 +6,6 @@ data class Playlist(
     val uri: String?,
     val images: List<Image>?,
     val ownerName: String?
-)
+) {
+    val coverImageUrl get() = images?.first()?.url
+}
