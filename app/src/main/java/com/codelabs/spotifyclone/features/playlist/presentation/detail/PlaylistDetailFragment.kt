@@ -1,6 +1,5 @@
 package com.codelabs.spotifyclone.features.playlist.presentation.detail
 
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,7 +20,6 @@ import com.codelabs.spotifyclone.core.presentation.UiState
 import com.codelabs.spotifyclone.databinding.FragmentPlaylistDetailBinding
 import com.codelabs.spotifyclone.features.collapsedplayer.CollapsedPlayerViewModel
 import dagger.hilt.android.AndroidEntryPoint
-
 
 @AndroidEntryPoint
 class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
@@ -92,7 +90,7 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
                         binding.listStateView.showRecyclerView()
                     }
                 }
-                is UiState.Error -> binding.listStateView.showError(state.message)
+                is UiState.Error -> binding.listStateView.showError(state.messageRes)
                 else -> {}
             }
         }

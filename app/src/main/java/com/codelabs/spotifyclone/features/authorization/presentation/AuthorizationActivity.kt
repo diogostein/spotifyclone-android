@@ -42,7 +42,7 @@ class AuthorizationActivity : AppCompatActivity() {
             when (state) {
                 is UiState.Loading -> setLoadingIndicator()
                 is UiState.Success -> navigateToHome()
-                is UiState.Error -> showError(state.message)
+                is UiState.Error -> showError(getString(state.messageRes))
                 else -> {}
             }
         }

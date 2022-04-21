@@ -1,6 +1,7 @@
 package com.codelabs.spotifyclone.features.playlist.domain.usecase
 
 import com.codelabs.spotifyclone.core.Result
+import com.codelabs.spotifyclone.core.data.api.response.toPlaylist
 import com.codelabs.spotifyclone.core.domain.UseCase
 import com.codelabs.spotifyclone.core.domain.model.Playlist
 import com.codelabs.spotifyclone.features.playlist.domain.PlaylistRepository

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.codelabs.spotifyclone.features.authorization.domain.usecase.GetAccessToken
 import com.codelabs.spotifyclone.core.Result
 import com.codelabs.spotifyclone.core.presentation.UiState
-import com.codelabs.spotifyclone.core.domain.toMessage
+import com.codelabs.spotifyclone.core.domain.toMessageRes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +28,7 @@ class AuthorizationViewModel @Inject constructor(
             _stateFlow.value = when (result) {
                 is Result.Success -> UiState.Success()
                 is Result.Error -> UiState.Error()
-                is Result.Exception -> UiState.Error(result.cause.toMessage())
+                is Result.Exception -> UiState.Error(result.cause.toMessageRes())
             }
         }.launchIn(viewModelScope)
     }

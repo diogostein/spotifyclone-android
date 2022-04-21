@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.codelabs.spotifyclone.core.Result
 import com.codelabs.spotifyclone.core.domain.model.Playlist
 import com.codelabs.spotifyclone.core.domain.model.Track
-import com.codelabs.spotifyclone.core.domain.toMessage
+import com.codelabs.spotifyclone.core.domain.toMessageRes
 import com.codelabs.spotifyclone.core.presentation.UiState
 import com.codelabs.spotifyclone.features.playlist.domain.usecase.GetPlaylistDetail
 import com.codelabs.spotifyclone.features.playlist.domain.usecase.GetPlaylistTracks
@@ -35,7 +35,7 @@ class PlaylistDetailViewModel @Inject constructor(
             _detailStateFlow.value = when (result) {
                 is Result.Success -> UiState.Success(result.data)
                 is Result.Error -> UiState.Error()
-                is Result.Exception -> UiState.Error(result.cause.toMessage())
+                is Result.Exception -> UiState.Error(result.cause.toMessageRes())
             }
         }.launchIn(viewModelScope)
     }
@@ -47,7 +47,7 @@ class PlaylistDetailViewModel @Inject constructor(
             _tracksStateFlow.value = when (result) {
                 is Result.Success -> UiState.Success(result.data)
                 is Result.Error -> UiState.Error()
-                is Result.Exception -> UiState.Error(result.cause.toMessage())
+                is Result.Exception -> UiState.Error(result.cause.toMessageRes())
             }
         }.launchIn(viewModelScope)
     }

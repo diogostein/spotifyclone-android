@@ -51,7 +51,7 @@ class PlaylistListFragment : Fragment(R.layout.fragment_playlist_list) {
                     playlistAdapter.add(state.data!!)
                     binding.listStateView.showRecyclerView()
                 }
-                is UiState.Error -> binding.listStateView.showError(state.message)
+                is UiState.Error -> binding.listStateView.showError(state.messageRes)
                 else -> {}
             }
         }

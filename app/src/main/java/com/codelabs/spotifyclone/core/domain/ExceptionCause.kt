@@ -9,12 +9,10 @@ sealed class ExceptionCause {
     object Unknown : ExceptionCause()
 }
 
-fun ExceptionCause.toMessage(): String {
-    return SpotifyCloneApplication.instance.let {
-        when (this) {
-            is ExceptionCause.NoConnection -> it.getString(R.string.no_internet_connection)
-            is ExceptionCause.NetworkFailure -> message ?: it.getString(R.string.server_failure)
-            else -> it.getString(R.string.unknown_error)
-        }
+fun ExceptionCause.toMessageRes(): Int {
+    return when (this) {
+        is ExceptionCause.NoConnection -> R.string.no_internet_connection
+        is ExceptionCause.NetworkFailure -> R.string.server_failure
+        else -> R.string.unknown_error
     }
 }

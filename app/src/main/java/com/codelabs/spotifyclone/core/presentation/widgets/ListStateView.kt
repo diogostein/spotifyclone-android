@@ -65,6 +65,10 @@ class ListStateView constructor(
         setErrorVisibility(VISIBLE, message)
     }
 
+    fun showError(messageRes: Int) {
+        showError(context.getString(messageRes))
+    }
+
     private fun setErrorVisibility(visibility: Int, message: String? = null) {
         binding.includeError.apply {
             viewGroupError.visibility = visibility

@@ -5,14 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.codelabs.spotifyclone.core.Result
 import com.codelabs.spotifyclone.core.domain.UseCase
 import com.codelabs.spotifyclone.core.domain.model.Playlist
-import com.codelabs.spotifyclone.core.domain.toMessage
+import com.codelabs.spotifyclone.core.domain.toMessageRes
 import com.codelabs.spotifyclone.core.presentation.UiState
 import com.codelabs.spotifyclone.features.playlist.domain.usecase.GetMyPlaylists
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,11 +27,11 @@ class PlaylistListViewModel @Inject constructor(
     fun getMyPlaylists() {
         _stateFlow.value = UiState.Loading
 
-        getMyPlaylists.execute(UseCase.Empty()).onEach { result ->
+        getMyPlaylists.execute(UseCase.Empty).onEach { result ->
             _stateFlow.value = when (result) {
                 is Result.Success -> UiState.Success(result.data)
                 is Result.Error -> UiState.Error()
-                is Result.Exception -> UiState.Error(result.cause.toMessage())
+                is Result.Exception -> UiState.Error(result.cause.toMessageRes())
             }
         }.launchIn(viewModelScope)
     }
