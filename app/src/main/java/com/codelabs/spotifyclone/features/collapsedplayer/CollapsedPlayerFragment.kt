@@ -1,11 +1,13 @@
 package com.codelabs.spotifyclone.features.collapsedplayer
 
 import android.annotation.SuppressLint
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.palette.graphics.Palette
 import com.codelabs.spotifyclone.R
@@ -45,9 +47,11 @@ class CollapsedPlayerFragment : Fragment(R.layout.fragment_collapsed_player) {
 
         viewModel.coverBitmap.observe(viewLifecycleOwner) { bitmap ->
             GlideHelper.load(bitmap, binding.ivCover)
-//            val palette = Palette.from(bitmap!!).generate()
-//            val vibrantSwatch = palette.vibrantSwatch
-//            binding.root.setBackgroundColor(vibrantSwatch?.rgb!!)
+            bitmap?.let {
+                Palette.from(it).generate().mutedSwatch?.rgb?.let { color ->
+                    binding.flContent.setBackgroundColor(color)
+                }
+            }
         }
 
         viewModel.uiProgressState.observe(viewLifecycleOwner) { state ->
