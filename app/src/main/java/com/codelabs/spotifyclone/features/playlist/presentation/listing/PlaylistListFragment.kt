@@ -35,7 +35,11 @@ class PlaylistListFragment : Fragment(R.layout.fragment_playlist_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+
+        (activity as AppCompatActivity).apply {
+            setTitle(R.string.my_playlists)
+            setSupportActionBar(binding.toolbar)
+        }
 
         playlistAdapter.setOnItemClickListener(::onItemClickListener)
 
@@ -61,7 +65,7 @@ class PlaylistListFragment : Fragment(R.layout.fragment_playlist_list) {
         activity?.apply {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fcvMain, PlaylistDetailFragment.newInstance(playlist.id!!))
-                .addToBackStack("PlaylistDetailFragment")
+                .addToBackStack(null)
                 .commit()
         }
     }

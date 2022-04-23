@@ -1,5 +1,6 @@
 package com.codelabs.spotifyclone.features.playlist.presentation.detail
 
+import android.graphics.Bitmap
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -50,9 +51,12 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         (activity as AppCompatActivity).apply {
-            setSupportActionBar(binding.toolbar)
             window.statusBarColor = ContextCompat.getColor(this, android.R.color.transparent)
+            setSupportActionBar(binding.toolbar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            binding.toolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
         }
 
         binding.fabPlayback.setOnClickListener {
@@ -69,7 +73,9 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
 
         binding.listStateView.apply {
             setAdapter(playlistTracksAdapter)
-            setOnRetryClickListener { playlistDetailViewModel.getPlaylistTracks(playlistId!!) }
+            setOnRetryClickListener {
+                playlistDetailViewModel.getPlaylistTracks(playlistId!!)
+            }
         }
 
         playlistDetailViewModel.detailStateFlow.asLiveData().observe(viewLifecycleOwner) { state ->
@@ -86,7 +92,7 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
                 is UiState.Loading -> binding.listStateView.showProgressIndicator()
                 is UiState.Success -> {
                     state.data?.let {
-                        playlistTracksAdapter.add(it)
+                        playlistTracksAdapter.add(it, collapsedPlayerViewModel.selectedTrack.value)
                         binding.listStateView.showRecyclerView()
                     }
                 }
@@ -107,6 +113,10 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
             }
         }
 
+        collapsedPlayerViewModel.selectedTrack.observe(viewLifecycleOwner) { track ->
+            playlistTracksAdapter.checkSelectedTrack(track)
+        }
+
         with (playlistDetailViewModel) {
             if (detailStateFlow.value is UiState.Initial
                 || tracksStateFlow.value is UiState.Initial) {
@@ -121,18 +131,14 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
         binding.tvPlaylistName.text = playlist.name
         binding.tvUserName.text = playlist.ownerName
 
+        if (playlist.description?.isNotBlank() == true)
+            binding.tvPlaylistDescription.text = playlist.description
+        else
+            binding.tvPlaylistDescription.visibility = View.GONE
+
         playlist.coverImageUrl?.let { coverImageUrl ->
             GlideHelper.load(coverImageUrl, binding.ivCollapsing)
-            GlideHelper.toBitmap(coverImageUrl) { bitmap ->
-                Palette.from(bitmap).generate().mutedSwatch?.rgb?.let { color ->
-                    binding.appBarLayout.background = GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        intArrayOf(color,
-                            ContextCompat.getColor(
-                                requireContext(), R.color.color_primary_variant))
-                    )
-                }
-            }
+            GlideHelper.toBitmap(coverImageUrl) { applyPaletteColorThemeFromBitmap(it) }
         }
 
         playlist.uri?.let { currentPlaylistUri ->
@@ -150,6 +156,25 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_playlist_detail) {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun applyPaletteColorThemeFromBitmap(bitmap: Bitmap) {
+        Palette.from(bitmap).generate { palette ->
+            val mutedColor = palette?.mutedSwatch?.rgb?.let { palette.getMutedColor(it) }
+            val darkMutedColor = palette?.darkMutedSwatch?.rgb?.let { palette.getDarkMutedColor(it) }
+
+            binding.appBarLayout.background = GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                intArrayOf(mutedColor ?: R.color.color_primary_variant,
+                    ContextCompat.getColor(
+                        requireContext(), R.color.color_primary_variant))
+            )
+
+            binding.collapsingToolbar.apply {
+                setStatusBarScrimColor(darkMutedColor ?: android.R.color.transparent)
+                setContentScrimColor(darkMutedColor ?: android.R.color.transparent)
+            }
+        }
     }
 
     companion object {

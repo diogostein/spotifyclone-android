@@ -10,4 +10,6 @@ data class Track(
     val uri: String?,
     val album: Album?,
     val addedAt: Date?
-)
+) {
+    val artistNames get(): String? = artists?.map { it.name }?.joinToString(", ")
+}

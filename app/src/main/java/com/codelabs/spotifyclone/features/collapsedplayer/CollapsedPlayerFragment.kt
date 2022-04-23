@@ -42,7 +42,7 @@ class CollapsedPlayerFragment : Fragment(R.layout.fragment_collapsed_player) {
 
         viewModel.selectedTrack.observe(viewLifecycleOwner) { track ->
             binding.tvTitle.text = track?.name
-            binding.tvSubtitle.text = track?.artist?.name
+            binding.tvSubtitle.text = track?.artists?.joinToString(", ") { it.name }
         }
 
         viewModel.coverBitmap.observe(viewLifecycleOwner) { bitmap ->

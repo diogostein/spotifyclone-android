@@ -5,9 +5,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import com.codelabs.spotifyclone.databinding.ActivityMainBinding
 import com.codelabs.spotifyclone.features.collapsedplayer.CollapsedPlayerFragment
 import com.codelabs.spotifyclone.features.collapsedplayer.CollapsedPlayerViewModel
-import com.codelabs.spotifyclone.databinding.ActivityMainBinding
 import com.codelabs.spotifyclone.features.playlist.presentation.listing.PlaylistListFragment
 import dagger.hilt.android.AndroidEntryPoint
 
