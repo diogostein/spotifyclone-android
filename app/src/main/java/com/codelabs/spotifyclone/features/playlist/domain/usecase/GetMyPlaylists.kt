@@ -12,7 +12,7 @@ class GetMyPlaylists(
     private val playlistRepository: PlaylistRepository,
 ) : UseCase<UseCase.Empty, Result<Nothing, List<Playlist>>> {
 
-    override fun execute(input: UseCase.Empty): Flow<Result<Nothing, List<Playlist>>> = flow {
+    override fun invoke(input: UseCase.Empty): Flow<Result<Nothing, List<Playlist>>> = flow {
         emit(playlistRepository.getMyPlaylists())
     }
 

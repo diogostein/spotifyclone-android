@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthorizationViewModel @Inject constructor(
-    private val getAccessToken: GetAccessToken
+    private val getAccessTokenUseCase: GetAccessToken
 ) : ViewModel() {
 
     private val _stateFlow = MutableStateFlow<UiState<Nothing>>(UiState.Initial)
@@ -24,7 +24,7 @@ class AuthorizationViewModel @Inject constructor(
     fun getAccessToken(responseCode: String) {
         _stateFlow.value = UiState.Loading
 
-        getAccessToken.execute(responseCode).onEach { result ->
+        getAccessTokenUseCase(responseCode).onEach { result ->
             _stateFlow.value = when (result) {
                 is Result.Success -> UiState.Success()
                 is Result.Error -> UiState.Error()

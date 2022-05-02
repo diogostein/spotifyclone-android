@@ -27,7 +27,7 @@ class PlaylistListViewModel @Inject constructor(
     fun getMyPlaylists() {
         _stateFlow.value = UiState.Loading
 
-        getMyPlaylists.execute(UseCase.Empty).onEach { result ->
+        getMyPlaylists(UseCase.Empty).onEach { result ->
             _stateFlow.value = when (result) {
                 is Result.Success -> UiState.Success(result.data)
                 is Result.Error -> UiState.Error()

@@ -18,8 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlaylistDetailViewModel @Inject constructor(
-    private val getPlaylistDetail: GetPlaylistDetail,
-    private val getPlaylistTracks: GetPlaylistTracks,
+    private val getPlaylistDetailUseCase: GetPlaylistDetail,
+    private val getPlaylistTracksUseCase: GetPlaylistTracks,
 ) : ViewModel() {
 
     private val _detailStateFlow = MutableStateFlow<UiState<Playlist>>(UiState.Initial)
@@ -31,7 +31,7 @@ class PlaylistDetailViewModel @Inject constructor(
     fun getPlaylistDetail(id: String) {
         _detailStateFlow.value = UiState.Loading
 
-        getPlaylistDetail.execute(id).onEach { result ->
+        getPlaylistDetailUseCase(id).onEach { result ->
             _detailStateFlow.value = when (result) {
                 is Result.Success -> UiState.Success(result.data)
                 is Result.Error -> UiState.Error()
@@ -43,7 +43,7 @@ class PlaylistDetailViewModel @Inject constructor(
     fun getPlaylistTracks(id: String) {
         _tracksStateFlow.value = UiState.Loading
 
-        getPlaylistTracks.execute(id).onEach { result ->
+        getPlaylistTracksUseCase(id).onEach { result ->
             _tracksStateFlow.value = when (result) {
                 is Result.Success -> UiState.Success(result.data)
                 is Result.Error -> UiState.Error()

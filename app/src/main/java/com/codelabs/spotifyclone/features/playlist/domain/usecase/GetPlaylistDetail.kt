@@ -11,7 +11,7 @@ class GetPlaylistDetail(
     private val playlistRepository: PlaylistRepository,
 ) : UseCase<String, Result<Nothing, Playlist>> {
 
-    override fun execute(input: String): Flow<Result<Nothing, Playlist>> = flow {
+    override fun invoke(input: String): Flow<Result<Nothing, Playlist>> = flow {
         emit(playlistRepository.getPlaylistDetail(input))
     }
 
