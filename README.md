@@ -1,9 +1,9 @@
 # Spotify Clone
 
 <div>
-  <img height="600" src="https://diogostein.dev/assets/codelabs/spotify_1-ffdd66d96adcc252b2d47a7355f39eff24b484d9dae90997fe84a2028ec24970.png" />
-  <img height="600" src="https://diogostein.dev/assets/codelabs/spotify_2-209b8bf4c5b00d193cdb18345fca8be28f249e2cd82b92fc2cf3d9255937142d.png" />
-  <img height="600" src="https://diogostein.dev/assets/codelabs/spotify_3-17086b7ab0cb5d44a1a4971e58ca55f03b63027c0a9c113e65f53f7ca40e5925.png" />
+  <img width="25%" src="https://diogostein.dev/assets/codelabs/spotify_1-ffdd66d96adcc252b2d47a7355f39eff24b484d9dae90997fe84a2028ec24970.png" />
+  <img width="25%" src="https://diogostein.dev/assets/codelabs/spotify_2-209b8bf4c5b00d193cdb18345fca8be28f249e2cd82b92fc2cf3d9255937142d.png" />
+  <img width="25%" src="https://diogostein.dev/assets/codelabs/spotify_3-17086b7ab0cb5d44a1a4971e58ca55f03b63027c0a9c113e65f53f7ca40e5925.png" />
 </div>
 
 <hr/>
